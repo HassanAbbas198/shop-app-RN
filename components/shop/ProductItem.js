@@ -1,29 +1,50 @@
 import React from 'react';
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import {
+	Button,
+	Image,
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	TouchableNativeFeedback,
+	Platform,
+} from 'react-native';
 
 import Colors from '../../constants/Colors';
 
 const ProductItem = (props) => {
+	let TouchableComponent = TouchableOpacity;
+
+	if (Platform.OS === 'android' && Platform.Version >= 21) {
+		TouchableComponent = TouchableNativeFeedback;
+	}
+
 	return (
 		<View style={styles.product}>
-			<View style={styles.imageContainer}>
-				<Image source={{ uri: props.image }} style={styles.image} />
-			</View>
-			<View style={styles.textContainer}>
-				<Text style={styles.title}>{props.title}</Text>
-				<Text style={styles.price}>${props.price.toFixed(2)}</Text>
-			</View>
-			<View style={styles.actions}>
-				<Button
-					title="View Details"
-					color={Colors.primary}
-					onPress={props.onViewDetail}
-				/>
-				<Button
-					title="To Cart"
-					color={Colors.primary}
-					onPress={props.onAddToCart}
-				/>
+			<View>
+				<TouchableComponent onPress={props.onViewDetail} useForeground>
+					<View>
+						<View style={styles.imageContainer}>
+							<Image source={{ uri: props.image }} style={styles.image} />
+						</View>
+						<View style={styles.textContainer}>
+							<Text style={styles.title}>{props.title}</Text>
+							<Text style={styles.price}>${props.price.toFixed(2)}</Text>
+						</View>
+						<View style={styles.actions}>
+							<Button
+								title="View Details"
+								color={Colors.primary}
+								onPress={props.onViewDetail}
+							/>
+							<Button
+								title="To Cart"
+								color={Colors.primary}
+								onPress={props.onAddToCart}
+							/>
+						</View>
+					</View>
+				</TouchableComponent>
 			</View>
 		</View>
 	);
@@ -40,6 +61,11 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		height: 300,
 		margin: 20,
+	},
+
+	touchable: {
+		overflow: 'hidden',
+		borderRadius: 10,
 	},
 
 	imageContainer: {
