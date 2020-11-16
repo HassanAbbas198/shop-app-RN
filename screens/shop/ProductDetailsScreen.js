@@ -7,9 +7,10 @@ import {
 	Image,
 	Button,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
+import * as actions from '../../store/actions/index';
 
 const ProductDetailsScreen = (props) => {
 	const id = props.navigation.getParam('productId');
@@ -17,11 +18,19 @@ const ProductDetailsScreen = (props) => {
 	const products = useSelector((state) => state.products.availableProducts);
 	const selectedProd = products.find((prod) => prod.id === id);
 
+	const dispatch = useDispatch();
+
 	return (
 		<ScrollView>
 			<Image source={{ uri: selectedProd.imageUrl }} style={styles.image} />
 			<View style={styles.actions}>
-				<Button title="Add to Cart" onPress={() => {}} color={Colors.primary} />
+				<Button
+					title="Add to Cart"
+					onPress={() => {
+						dispatch(actions.addToCart(selectedProd));
+					}}
+					color={Colors.primary}
+				/>
 			</View>
 			<Text style={styles.price}>${selectedProd.price}</Text>
 			<Text style={styles.description}>{selectedProd.description}</Text>
@@ -48,6 +57,7 @@ const styles = StyleSheet.create({
 	},
 
 	price: {
+		fontFamily: 'open-sans-bold',
 		fontSize: 20,
 		color: '#888',
 		textAlign: 'center',
@@ -55,6 +65,7 @@ const styles = StyleSheet.create({
 	},
 
 	description: {
+		fontFamily: 'open-sans',
 		fontSize: 14,
 		textAlign: 'center',
 		marginHorizontal: 20,
