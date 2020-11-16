@@ -65,6 +65,10 @@ export default (state = initialState, action) => {
 				totalAmount: state.totalAmount - selectedCartItem.productPrice,
 			};
 
+		// clearing the cart after presing order now
+		case actionTypes.ADD_ORDER:
+			return initialState;
+
 		default:
 			return state;
 	}
