@@ -1,3 +1,3 @@
 export { addToCart, removeFromCart } from './cart';
 export { addOrder } from './orders';
-export { deleteProduct } from './products';
+export { createProduct, updateProduct, deleteProduct } from './products';

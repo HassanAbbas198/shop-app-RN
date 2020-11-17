@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
 	Platform,
 	ScrollView,
@@ -8,7 +8,9 @@ import {
 	View,
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import * as actions from '../../store/actions/index';
 
 import HeaderButton from '../../components/UI/HeaderButton';
 
@@ -25,6 +27,20 @@ const EditProductScreen = (props) => {
 	const [description, setDescription] = useState(
 		editedProduct ? editedProduct.description : ''
 	);
+
+	const dispatch = useDispatch();
+
+	const submitHandler = useCallback(() => {
+		if (editedProduct) {
+			dispatch(actions.updateProduct(prodId, title, description, imageUrl));
+		} else {
+			dispatch(actions.createProduct(title, description, imageUrl, +price));
+		}
+	}, [dispatch, prodId, title, description, imageUrl, price]);
+
+	useEffect(() => {
+		props.navigation.setParams({ submit: submitHandler });
+	}, [submitHandler]);
 
 	return (
 		<ScrollView>
@@ -73,6 +89,8 @@ const EditProductScreen = (props) => {
 
 EditProductScreen.navigationOptions = (navData) => {
 	const id = navData.navigation.getParam('productId');
+
+	const submutFun = navData.navigation.getParam('submit');
 	return {
 		headerTitle: id ? 'Edit Product' : 'Add Product',
 		headerRight: () => (
@@ -82,7 +100,7 @@ EditProductScreen.navigationOptions = (navData) => {
 					iconName={
 						Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
 					}
-					onPress={() => {}}
+					onPress={submutFun}
 				/>
 			</HeaderButtons>
 		),
