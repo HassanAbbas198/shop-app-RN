@@ -1,19 +1,12 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
-import {
-	Alert,
-	Platform,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	View,
-} from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as actions from '../../store/actions/index';
 
 import HeaderButton from '../../components/UI/HeaderButton';
+import Input from '../../components/UI/Input';
 
 // this is not related to redux
 const formReducer = (state, action) => {
@@ -100,62 +93,71 @@ const EditProductScreen = (props) => {
 		props.navigation.setParams({ submit: submitHandler });
 	}, [submitHandler]);
 
-	const textChangedHandler = (inputId, text) => {
-		let isValid = false;
-		if (text.trim().length > 0) {
-			isValid = true;
-		}
-		dispatchFormState({
-			type: 'FORM_UPDATE',
-			value: text,
-			isValid,
-			input: inputId,
-		});
-	};
+	const inputChangedHandler = useCallback(
+		(inputId, inputValue, inputValidity) => {
+			dispatchFormState({
+				type: 'FORM_UPDATE',
+				value: inputValue,
+				isValid: inputValidity,
+				input: inputId,
+			});
+		},
+		[dispatchFormState]
+	);
 
 	return (
 		<ScrollView>
 			<View style={styles.form}>
-				<View style={styles.formControl}>
-					<Text style={styles.label}>Title</Text>
-					<TextInput
-						style={styles.input}
-						value={formState.inputValues.title}
-						onChangeText={(text) => textChangedHandler('title', text)}
-						keyboardType="default"
-						returnKeyType="next"
-					/>
-				</View>
+				<Input
+					id="title"
+					label="Title"
+					errorText="Please enter a valid title"
+					keyboardType="default"
+					returnKeyType="next"
+					onInputChange={inputChangedHandler}
+					initialValue={editedProduct ? editedProduct.title : ''}
+					initiallyValid={!!editedProduct}
+					required
+				/>
 
-				<View style={styles.formControl}>
-					<Text style={styles.label}>Image URL</Text>
-					<TextInput
-						style={styles.input}
-						value={formState.inputValues.imageUrl}
-						onChangeText={(text) => textChangedHandler('imageUrl', text)}
-					/>
-				</View>
+				<Input
+					id="imageUrl"
+					label="Image Url"
+					errorText="Please enter a valid image Url"
+					keyboardType="default"
+					returnKeyType="next"
+					onInputChange={inputChangedHandler}
+					initialValue={editedProduct ? editedProduct.imageUrl : ''}
+					initiallyValid={!!editedProduct}
+					required
+				/>
 
 				{!editedProduct && (
-					<View style={styles.formControl}>
-						<Text style={styles.label}>Price</Text>
-						<TextInput
-							style={styles.input}
-							value={formState.inputValues.price}
-							onChangeText={(text) => textChangedHandler('price', text)}
-							keyboardType="decimal-pad"
-						/>
-					</View>
+					<Input
+						id="price"
+						label="Price"
+						errorText="Please enter a valid price"
+						keyboardType="decimal-pad"
+						returnKeyType="next"
+						onInputChange={inputChangedHandler}
+						required
+						min={0.1}
+					/>
 				)}
 
-				<View style={styles.formControl}>
-					<Text style={styles.label}>Description</Text>
-					<TextInput
-						style={styles.input}
-						value={formState.inputValues.description}
-						onChangeText={(text) => textChangedHandler('description', text)}
-					/>
-				</View>
+				<Input
+					id="description"
+					label="Description"
+					errorText="Please enter a valid description"
+					keyboardType="default"
+					multiline
+					numberOfLines={3}
+					onInputChange={inputChangedHandler}
+					initialValue={editedProduct ? editedProduct.description : ''}
+					initiallyValid={!!editedProduct}
+					required
+					minLength={5}
+				/>
 			</View>
 		</ScrollView>
 	);
@@ -184,17 +186,6 @@ EditProductScreen.navigationOptions = (navData) => {
 const styles = StyleSheet.create({
 	form: {
 		margin: 20,
-	},
-	formControl: { width: '100%' },
-	label: {
-		fontFamily: 'open-sans-bold',
-		marginVertical: 8,
-	},
-	input: {
-		paddingHorizontal: 2,
-		paddingVertical: 5,
-		borderBottomColor: '#ccc',
-		borderBottomWidth: 1,
 	},
 });
 
