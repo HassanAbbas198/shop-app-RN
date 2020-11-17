@@ -36,6 +36,7 @@ const EditProductScreen = (props) => {
 		} else {
 			dispatch(actions.createProduct(title, description, imageUrl, +price));
 		}
+		props.navigation.goBack();
 	}, [dispatch, prodId, title, description, imageUrl, price]);
 
 	useEffect(() => {
@@ -90,7 +91,7 @@ const EditProductScreen = (props) => {
 EditProductScreen.navigationOptions = (navData) => {
 	const id = navData.navigation.getParam('productId');
 
-	const submutFun = navData.navigation.getParam('submit');
+	const submitFun = navData.navigation.getParam('submit');
 	return {
 		headerTitle: id ? 'Edit Product' : 'Add Product',
 		headerRight: () => (
@@ -100,7 +101,7 @@ EditProductScreen.navigationOptions = (navData) => {
 					iconName={
 						Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
 					}
-					onPress={submutFun}
+					onPress={submitFun}
 				/>
 			</HeaderButtons>
 		),

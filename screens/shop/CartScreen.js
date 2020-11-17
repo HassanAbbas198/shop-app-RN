@@ -6,6 +6,7 @@ import * as actions from '../../store/actions/index';
 import Colors from '../../constants/Colors';
 
 import CartItem from '../../components/shop/CartItem';
+import Card from '../../components/UI/Card';
 
 const CartScreen = (props) => {
 	const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
@@ -31,11 +32,11 @@ const CartScreen = (props) => {
 
 	return (
 		<View style={styles.screen}>
-			<View style={styles.summary}>
+			<Card styles={styles.summary}>
 				<Text style={styles.summaryText}>
 					Total:{' '}
 					<Text style={styles.amount}>
-						${Math.random(cartTotalAmount.toFixed(2) * 100) / 100}
+						${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
 					</Text>
 				</Text>
 				<Button
@@ -46,7 +47,7 @@ const CartScreen = (props) => {
 					color={Colors.secondary}
 					disabled={cartItems.length === 0}
 				/>
-			</View>
+			</Card>
 
 			<FlatList
 				data={cartItems}
@@ -81,13 +82,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		marginBottom: 20,
 		padding: 10,
-		shadowColor: 'black',
-		shadowOpacity: 0.3,
-		shadowOffset: { width: 0, height: 2 },
-		shadowRadius: 8,
-		elevation: 5,
-		borderRadius: 10,
-		backgroundColor: 'white',
 	},
 	summaryText: {
 		fontFamily: 'open-sans-bold',
