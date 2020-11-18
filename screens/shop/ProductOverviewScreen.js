@@ -21,24 +21,28 @@ import HeaderButton from '../../components/UI/HeaderButton';
 const ProductsOverviewScreen = (props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState();
+	const [isRefreshing, setIsRefreshing] = useState(false);
 	const dispatch = useDispatch();
 
 	const products = useSelector((state) => state.products.availableProducts);
 
 	const loadProducts = useCallback(async () => {
 		setError(null);
-		setIsLoading(true);
+		setIsRefreshing(true);
 		try {
 			await dispatch(actions.fetchProducts());
 		} catch (error) {
 			// we have the error here cz we rethrew it in the action creator
 			setError(error.message);
 		}
-		setIsLoading(false);
+		setIsRefreshing(false);
 	}, [dispatch]);
 
 	useEffect(() => {
-		loadProducts();
+		setIsLoading(true);
+		loadProducts().then(() => {
+			setIsLoading(false);
+		});
 	}, [loadProducts]);
 
 	const { navigation } = props;
@@ -89,6 +93,8 @@ const ProductsOverviewScreen = (props) => {
 
 	return (
 		<FlatList
+			onRefresh={loadProducts}
+			refreshing={isRefreshing}
 			data={products}
 			renderItem={(itemData) => (
 				<ProductItem
