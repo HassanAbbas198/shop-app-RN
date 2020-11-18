@@ -1,4 +1,34 @@
+import Product from '../../models/Product';
 import * as actionTypes from './actionTypes';
+
+export const fetchProducts = () => {
+	return async (dispatch) => {
+		try {
+			const response = await fetch(
+				`https://shop-app-15651.firebaseio.com/products.json`
+			);
+			const resData = await response.json();
+			const loadedProducts = [];
+
+			for (const key in resData) {
+				loadedProducts.push(
+					new Product(
+						key,
+						'u1',
+						resData[key].title,
+						resData[key].imageUrl,
+						resData[key].description,
+						resData[key].price
+					)
+				);
+			}
+
+			dispatch({ type: actionTypes.SET_PRODUCTS, products: loadedProducts });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+};
 
 export const deleteProduct = (productId) => {
 	return {

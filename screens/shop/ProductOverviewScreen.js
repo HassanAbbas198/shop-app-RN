@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, Platform, Button } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,6 +12,10 @@ import HeaderButton from '../../components/UI/HeaderButton';
 const ProductsOverviewScreen = (props) => {
 	const products = useSelector((state) => state.products.availableProducts);
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(actions.fetchProducts());
+	}, [dispatch]);
 
 	const selectItemHandler = (id, title) => {
 		props.navigation.navigate({
