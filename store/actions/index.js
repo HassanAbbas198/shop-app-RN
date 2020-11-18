@@ -6,3 +6,5 @@ export {
 	updateProduct,
 	deleteProduct,
 } from './products';
+
+export { signup } from './auth';
