@@ -36,10 +36,11 @@ export const fetchProducts = () => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
+		const token = getState().auth.token;
 		try {
 			const response = await fetch(
-				`https://shop-app-15651.firebaseio.com/products.json`,
+				`https://shop-app-15651.firebaseio.com/products.json?auth=${token}`,
 				{
 					method: 'POST',
 					headers: {
@@ -72,10 +73,12 @@ export const createProduct = (title, description, imageUrl, price) => {
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
+		const token = getState().auth.token;
+
 		try {
 			const response = await fetch(
-				`https://shop-app-15651.firebaseio.com/products/${id}.json`,
+				`https://shop-app-15651.firebaseio.com/products/${id}.json?auth=${token}`,
 				{
 					method: 'PATCH',
 					headers: {
@@ -109,10 +112,11 @@ export const updateProduct = (id, title, description, imageUrl) => {
 };
 
 export const deleteProduct = (productId) => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
+		const token = getState().auth.token;
 		try {
 			const response = await fetch(
-				`https://shop-app-15651.firebaseio.com/products/${productId}.json`,
+				`https://shop-app-15651.firebaseio.com/products/${productId}.json?auth=${token}`,
 				{
 					method: 'DELETE',
 				}
