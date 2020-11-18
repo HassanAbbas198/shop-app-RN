@@ -2,7 +2,8 @@ import Product from '../../models/Product';
 import * as actionTypes from './actionTypes';
 
 export const fetchProducts = () => {
-	return async (dispatch) => {
+	return async (dispatch, getState) => {
+		const userId = getState().auth.userId;
 		try {
 			const response = await fetch(
 				`https://shop-app-15651.firebaseio.com/products.json`
@@ -19,7 +20,7 @@ export const fetchProducts = () => {
 				loadedProducts.push(
 					new Product(
 						key,
-						'u1',
+						resData[key].ownerId,
 						resData[key].title,
 						resData[key].imageUrl,
 						resData[key].description,
@@ -28,7 +29,11 @@ export const fetchProducts = () => {
 				);
 			}
 
-			dispatch({ type: actionTypes.SET_PRODUCTS, products: loadedProducts });
+			dispatch({
+				type: actionTypes.SET_PRODUCTS,
+				products: loadedProducts.filter((prod) => prod.ownerId != userId),
+				userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+			});
 		} catch (error) {
 			throw error;
 		}
@@ -38,6 +43,7 @@ export const fetchProducts = () => {
 export const createProduct = (title, description, imageUrl, price) => {
 	return async (dispatch, getState) => {
 		const token = getState().auth.token;
+		const userId = getState().auth.userId;
 		try {
 			const response = await fetch(
 				`https://shop-app-15651.firebaseio.com/products.json?auth=${token}`,
@@ -51,6 +57,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 						description,
 						imageUrl,
 						price,
+						ownerId: userId,
 					}),
 				}
 			);
@@ -64,6 +71,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 					description,
 					imageUrl,
 					price,
+					ownerId: userId,
 				},
 			});
 		} catch (error) {

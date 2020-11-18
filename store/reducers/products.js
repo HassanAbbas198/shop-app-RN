@@ -12,7 +12,7 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				availableProducts: action.products,
-				userProducts: action.products.filter((prod) => prod.ownerId === 'u1'),
+				userProducts: action.userProducts,
 			};
 
 		case actionTypes.DELETE_PRODUCT:
@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
 		case actionTypes.CREATE_PRODUCT:
 			const newProduct = new Product(
 				action.productData.id,
-				'u1',
+				action.productData.ownerId,
 				action.productData.title,
 				action.productData.imageUrl,
 				action.productData.description,
