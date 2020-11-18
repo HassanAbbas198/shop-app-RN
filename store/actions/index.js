@@ -1,5 +1,5 @@
 export { addToCart, removeFromCart } from './cart';
-export { addOrder } from './orders';
+export { fetchOrders, addOrder } from './orders';
 export {
 	fetchProducts,
 	createProduct,

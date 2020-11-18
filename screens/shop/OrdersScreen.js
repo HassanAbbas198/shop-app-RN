@@ -1,13 +1,37 @@
-import React from 'react';
-import { FlatList, Text } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { FlatList, StyleSheet, ActivityIndicator, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import OrderItem from '../../components/shop/OrderItem';
+
+import * as actions from '../../store/actions/index';
+import Colors from '../../constants/Colors';
 
 import HeaderButton from '../../components/UI/HeaderButton';
 
 const OrdersScreen = (props) => {
+	const [isLoading, setIsLoading] = useState(false);
+	const dispatch = useDispatch();
+
 	const orders = useSelector((state) => state.orders.orders);
+
+	const loadOrders = useCallback(async () => {
+		setIsLoading(true);
+		await dispatch(actions.fetchOrders());
+		setIsLoading(false);
+	}, []);
+
+	useEffect(() => {
+		loadOrders();
+	}, [loadOrders]);
+
+	if (isLoading) {
+		return (
+			<View style={styles.centered}>
+				<ActivityIndicator size="large" color={Colors.primary} />
+			</View>
+		);
+	}
 
 	return (
 		<FlatList
@@ -39,5 +63,13 @@ OrdersScreen.navigationOptions = (navData) => {
 		),
 	};
 };
+
+const styles = StyleSheet.create({
+	centered: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+});
 
 export default OrdersScreen;
