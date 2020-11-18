@@ -1,5 +1,12 @@
-import React, { useCallback, useReducer, useState } from 'react';
-import { StyleSheet, View, ScrollView, Button } from 'react-native';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import {
+	StyleSheet,
+	View,
+	ScrollView,
+	Button,
+	ActivityIndicator,
+	Alert,
+} from 'react-native';
 import { useDispatch } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -39,6 +46,8 @@ const formReducer = (state, action) => {
 
 const AuthScreen = (props) => {
 	const [isAuth, setIsAuth] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState();
 	const dispatch = useDispatch();
 
 	const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -53,7 +62,13 @@ const AuthScreen = (props) => {
 		formIsValid: false,
 	});
 
-	const authHandler = () => {
+	useEffect(() => {
+		if (error) {
+			Alert.alert('An error occured!', error, [{ text: 'Okay' }]);
+		}
+	}, [error]);
+
+	const authHandler = async () => {
 		let action;
 		if (isAuth) {
 			action = actions.signup(
@@ -66,7 +81,15 @@ const AuthScreen = (props) => {
 				formState.inputValues.password
 			);
 		}
-		dispatch(action);
+		setError(null);
+		setIsLoading(true);
+
+		try {
+			await dispatch(action);
+		} catch (error) {
+			setError(error.message);
+		}
+		setIsLoading(false);
 	};
 
 	const inputChangedHandler = useCallback(
@@ -85,48 +108,52 @@ const AuthScreen = (props) => {
 		<View style={styles.screen}>
 			<LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
 				<Card styles={styles.authContainer}>
-					<ScrollView>
-						<Input
-							id="email"
-							label="E-Mail"
-							keyboardType="email-address"
-							required
-							email
-							autoCapitalize="none"
-							errorText="Please enter a valid email address"
-							onInputChange={inputChangedHandler}
-							initialValue=""
-						/>
+					{isLoading ? (
+						<ActivityIndicator size="large" color={Colors.primary} />
+					) : (
+						<ScrollView>
+							<Input
+								id="email"
+								label="E-Mail"
+								keyboardType="email-address"
+								required
+								email
+								autoCapitalize="none"
+								errorText="Please enter a valid email address"
+								onInputChange={inputChangedHandler}
+								initialValue=""
+							/>
 
-						<Input
-							id="password"
-							label="Password"
-							keyboardType="default"
-							required
-							minLength={5}
-							secureTextEntry
-							autoCapitalize="none"
-							errorText="Please enter a valid Password"
-							onInputChange={inputChangedHandler}
-							initialValue=""
-						/>
-						<View style={styles.buttonContainer}>
-							<Button
-								title={isAuth ? 'Sign Up' : 'Login'}
-								color={Colors.primary}
-								onPress={authHandler}
+							<Input
+								id="password"
+								label="Password"
+								keyboardType="default"
+								required
+								minLength={5}
+								secureTextEntry
+								autoCapitalize="none"
+								errorText="Please enter a valid Password"
+								onInputChange={inputChangedHandler}
+								initialValue=""
 							/>
-						</View>
-						<View style={styles.buttonContainer}>
-							<Button
-								title={`Switch to ${isAuth ? 'Login' : 'Sign Up'}`}
-								color={Colors.secondary}
-								onPress={() => {
-									setIsAuth((prevState) => !prevState);
-								}}
-							/>
-						</View>
-					</ScrollView>
+							<View style={styles.buttonContainer}>
+								<Button
+									title={isAuth ? 'Sign Up' : 'Login'}
+									color={Colors.primary}
+									onPress={authHandler}
+								/>
+							</View>
+							<View style={styles.buttonContainer}>
+								<Button
+									title={`Switch to ${isAuth ? 'Login' : 'Sign Up'}`}
+									color={Colors.secondary}
+									onPress={() => {
+										setIsAuth((prevState) => !prevState);
+									}}
+								/>
+							</View>
+						</ScrollView>
+					)}
 				</Card>
 			</LinearGradient>
 		</View>
