@@ -6,6 +6,8 @@ import {
 	Button,
 	ActivityIndicator,
 	Alert,
+	KeyboardAvoidingView,
+	Platform,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -106,7 +108,11 @@ const AuthScreen = (props) => {
 	);
 
 	return (
-		<View style={styles.screen}>
+		<KeyboardAvoidingView
+			behavior={Platform.OS === 'ios' ? 'padding' : null}
+			keyboardVerticalOffset={Platform.OS === 'ios' ? 15 : 0}
+			style={styles.screen}
+		>
 			<LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
 				<Card styles={styles.authContainer}>
 					{isLoading ? (
@@ -157,7 +163,7 @@ const AuthScreen = (props) => {
 					)}
 				</Card>
 			</LinearGradient>
-		</View>
+		</KeyboardAvoidingView>
 	);
 };
 
