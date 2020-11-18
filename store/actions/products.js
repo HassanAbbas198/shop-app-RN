@@ -7,6 +7,11 @@ export const fetchProducts = () => {
 			const response = await fetch(
 				`https://shop-app-15651.firebaseio.com/products.json`
 			);
+
+			if (!response.ok) {
+				throw new Error('something went wrong!');
+			}
+
 			const resData = await response.json();
 			const loadedProducts = [];
 
@@ -25,7 +30,7 @@ export const fetchProducts = () => {
 
 			dispatch({ type: actionTypes.SET_PRODUCTS, products: loadedProducts });
 		} catch (error) {
-			console.log(error);
+			throw error;
 		}
 	};
 };

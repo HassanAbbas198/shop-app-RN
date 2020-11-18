@@ -1,5 +1,14 @@
-import React, { useEffect } from 'react';
-import { FlatList, Platform, Button } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+	FlatList,
+	Platform,
+	Button,
+	ActivityIndicator,
+	StyleSheet,
+	View,
+	Text,
+	Alert,
+} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -10,12 +19,27 @@ import ProductItem from '../../components/shop/ProductItem';
 import HeaderButton from '../../components/UI/HeaderButton';
 
 const ProductsOverviewScreen = (props) => {
-	const products = useSelector((state) => state.products.availableProducts);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState();
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		dispatch(actions.fetchProducts());
+	const products = useSelector((state) => state.products.availableProducts);
+
+	const loadProducts = useCallback(async () => {
+		setError(null);
+		setIsLoading(true);
+		try {
+			await dispatch(actions.fetchProducts());
+		} catch (error) {
+			// we have the error here cz we rethrew it in the action creator
+			setError(error.message);
+		}
+		setIsLoading(false);
 	}, [dispatch]);
+
+	useEffect(() => {
+		loadProducts();
+	}, [loadProducts]);
 
 	const selectItemHandler = (id, title) => {
 		props.navigation.navigate({
@@ -26,6 +50,33 @@ const ProductsOverviewScreen = (props) => {
 			},
 		});
 	};
+
+	if (error) {
+		Alert.alert('An error occured!', 'Something went wrong', [
+			{
+				text: 'Try again',
+				onPress: () => {
+					loadProducts();
+				},
+			},
+		]);
+	}
+
+	if (isLoading) {
+		return (
+			<View style={styles.centered}>
+				<ActivityIndicator size="large" color={Colors.primary} />
+			</View>
+		);
+	}
+
+	if (!isLoading && products.length === 0) {
+		return (
+			<View style={styles.centered}>
+				<Text>No products found!</Text>
+			</View>
+		);
+	}
 
 	return (
 		<FlatList
@@ -88,5 +139,13 @@ ProductsOverviewScreen.navigationOptions = (navData) => {
 		),
 	};
 };
+
+const styles = StyleSheet.create({
+	centered: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+});
 
 export default ProductsOverviewScreen;
