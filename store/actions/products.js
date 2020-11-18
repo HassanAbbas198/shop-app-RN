@@ -35,13 +35,6 @@ export const fetchProducts = () => {
 	};
 };
 
-export const deleteProduct = (productId) => {
-	return {
-		type: actionTypes.DELETE_PRODUCT,
-		productId,
-	};
-};
-
 export const createProduct = (title, description, imageUrl, price) => {
 	return async (dispatch) => {
 		try {
@@ -79,13 +72,45 @@ export const createProduct = (title, description, imageUrl, price) => {
 };
 
 export const updateProduct = (id, title, description, imageUrl) => {
-	return {
-		type: actionTypes.UPDATE_PRODUCT,
-		productId: id,
-		productData: {
-			title,
-			description,
-			imageUrl,
-		},
+	return async (dispatch) => {
+		try {
+			await fetch(`https://shop-app-15651.firebaseio.com/products/${id}.json`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					title,
+					description,
+					imageUrl,
+				}),
+			});
+
+			dispatch({
+				type: actionTypes.UPDATE_PRODUCT,
+				productId: id,
+				productData: {
+					title,
+					description,
+					imageUrl,
+				},
+			});
+		} catch (error) {}
+	};
+};
+
+export const deleteProduct = (productId) => {
+	return async (dispatch) => {
+		await fetch(
+			`https://shop-app-15651.firebaseio.com/products/${productId}.json`,
+			{
+				method: 'DELETE',
+			}
+		);
+
+		dispatch({
+			type: actionTypes.DELETE_PRODUCT,
+			productId,
+		});
 	};
 };
