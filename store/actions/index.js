@@ -7,4 +7,4 @@ export {
 	deleteProduct,
 } from './products';
 
-export { signup } from './auth';
+export { signu, login } from './auth';

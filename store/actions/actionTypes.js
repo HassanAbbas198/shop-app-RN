@@ -10,3 +10,4 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 
 export const SIGNUP = 'SIGNUP';
+export const LOGIN = 'LOGIN';
