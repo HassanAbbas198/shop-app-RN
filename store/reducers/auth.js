@@ -7,14 +7,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
 	switch (action.type) {
-		case actionTypes.SIGNUP:
-			return {
-				...state,
-				token: action.token,
-				userId: action.userId,
-			};
-
-		case actionTypes.LOGIN:
+		case actionTypes.AUTHENTICATE:
 			return {
 				...state,
 				token: action.token,
