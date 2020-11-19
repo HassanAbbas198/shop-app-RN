@@ -7,7 +7,8 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import ShopNavigator from './navigation/ShopNavigator';
+import NavigationContainer from './navigation/NavigationContainer';
+
 import productsReducer from './store/reducers/products';
 import cartReducer from './store/reducers/cart';
 import ordersReducer from './store/reducers/orders';
@@ -46,9 +47,10 @@ export default function App() {
 		);
 	}
 
+	// navigationContainer is just a wrapper to my navigation, there I have access to redux
 	return (
 		<Provider store={store}>
-			<ShopNavigator />
+			<NavigationContainer />
 		</Provider>
 	);
 }
