@@ -1,11 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
-import ProductOverviewScreen from '../screens/shop/ProductOverviewScreen';
-
-const MyStack = createStackNavigator();
+import { ProductsNavigator } from './ShopNavigator';
 
 const AppNavigator = (props) => {
 	// !! forces the value to be true or false
@@ -13,12 +10,7 @@ const AppNavigator = (props) => {
 
 	return (
 		<NavigationContainer>
-			<MyStack.Navigator>
-				<MyStack.Screen
-					name="ProductsOverview"
-					component={ProductOverviewScreen}
-				/>
-			</MyStack.Navigator>
+			<ProductsNavigator />
 		</NavigationContainer>
 	);
 };
