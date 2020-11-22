@@ -13,7 +13,7 @@ import Colors from '../../constants/Colors';
 import * as actions from '../../store/actions/index';
 
 const ProductDetailsScreen = (props) => {
-	const id = props.navigation.getParam('productId');
+	const id = props.route.params.productId;
 
 	const products = useSelector((state) => state.products.availableProducts);
 	const selectedProd = products.find((prod) => prod.id === id);
@@ -39,7 +39,8 @@ const ProductDetailsScreen = (props) => {
 };
 
 export const screenOptions = (navData) => {
-	const title = navData.navigation.getParam('productTitle');
+	const title = navData.route.params.productTitle;
+
 	return {
 		headerTitle: title,
 	};
