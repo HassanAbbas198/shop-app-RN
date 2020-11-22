@@ -6,6 +6,7 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import * as Notifications from 'expo-notifications';
 
 import AppNavigator from './navigation/AppNavigator';
 
@@ -15,6 +16,14 @@ import ordersReducer from './store/reducers/orders';
 import authReducer from './store/reducers/auth';
 
 enableScreens();
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => {
+		return {
+			shouldShowAlert: true,
+		};
+	},
+});
 
 const rootReducer = combineReducers({
 	products: productsReducer,

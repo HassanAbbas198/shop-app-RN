@@ -1,3 +1,6 @@
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
+
 import Product from '../../models/Product';
 import * as actionTypes from './actionTypes';
 
@@ -24,7 +27,8 @@ export const fetchProducts = () => {
 						resData[key].title,
 						resData[key].imageUrl,
 						resData[key].description,
-						resData[key].price
+						resData[key].price,
+						resData[key].ownerPushToken
 					)
 				);
 			}
@@ -42,6 +46,20 @@ export const fetchProducts = () => {
 
 export const createProduct = (title, description, imageUrl, price) => {
 	return async (dispatch, getState) => {
+		// push notifications
+		let pushToken;
+		let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+
+		if (statusObj.status !== 'granted') {
+			statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+		}
+		if (statusObj.status !== 'granted') {
+			pushToken = null;
+		} else {
+			const res = await Notifications.getExpoPushTokenAsync();
+			pushToken = res.data;
+		}
+
 		const token = getState().auth.token;
 		const userId = getState().auth.userId;
 		try {
@@ -58,6 +76,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 						imageUrl,
 						price,
 						ownerId: userId,
+						ownerPushToken: pushToken,
 					}),
 				}
 			);
@@ -72,6 +91,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 					imageUrl,
 					price,
 					ownerId: userId,
+					pushToken,
 				},
 			});
 		} catch (error) {
