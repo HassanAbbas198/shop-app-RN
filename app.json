@@ -4,24 +4,24 @@
 		"slug": "shop-app",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/icon.png",
+		"icon": "./assets/shop.png",
 		"splash": {
-			"image": "./assets/splash.png",
+			"image": "./assets/splash_icon.png",
 			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#171717"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0
 		},
-		"assetBundlePatterns": ["**/*"],
+		"assetBundlePatterns": ["assets/fonts/*"],
 		"ios": {
 			"supportsTablet": true
 		},
 		"android": {
 			"useNextNotificationsApi": true,
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#FFFFFF"
+				"foregroundImage": "./assets/shop-adaptive.png",
+				"backgroundColor": "#171717"
 			}
 		},
 		"web": {

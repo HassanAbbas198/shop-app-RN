@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { enableScreens } from 'react-native-screens';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
+import * as Notifications from 'expo-notifications';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import * as Notifications from 'expo-notifications';
 
 import AppNavigator from './navigation/AppNavigator';
 
@@ -31,11 +30,7 @@ const rootReducer = combineReducers({
 	orders: ordersReducer,
 	auth: authReducer,
 });
-const store = createStore(
-	rootReducer,
-	applyMiddleware(thunk),
-	composeWithDevTools()
-);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const fetchFonts = () => {
 	return Font.loadAsync({
