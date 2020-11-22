@@ -3,6 +3,7 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
 	userId: null,
 	token: null,
+	didTryAutoLogin: false,
 };
 
 export default (state = initialState, action) => {
@@ -12,6 +13,13 @@ export default (state = initialState, action) => {
 				...state,
 				userId: action.userId,
 				token: action.token,
+				didTryAutoLogin: true,
+			};
+
+		case actionTypes.SET_DID_TRY_AL:
+			return {
+				...state,
+				didTryAutoLogin: true,
 			};
 
 		case actionTypes.LOGOUT:
@@ -19,6 +27,7 @@ export default (state = initialState, action) => {
 				...state,
 				userId: null,
 				token: null,
+				didTryAutoLogin: true,
 			};
 
 		default:
