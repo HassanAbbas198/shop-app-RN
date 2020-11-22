@@ -15,9 +15,13 @@
 		},
 		"assetBundlePatterns": ["assets/fonts/*"],
 		"ios": {
+			"bundleIdentifier": "com.hassanabbas.shopApp",
+			"buildNumber": "1.0.0",
 			"supportsTablet": true
 		},
 		"android": {
+			"package": "com.hassanabbas.shopApp",
+			"versionCode": 1,
 			"useNextNotificationsApi": true,
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/shop-adaptive.png",
